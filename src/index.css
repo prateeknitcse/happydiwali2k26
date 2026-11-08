@@ -1,0 +1,265 @@
+@import "tailwindcss";
+
+@theme {
+  --color-night: #05060d;
+  --color-ink: #090a17;
+  --color-navy: #0e1128;
+  --color-gold: #ffd76a;
+  --color-gold-deep: #c98a2e;
+  --color-amber: #ffb547;
+  --color-saffron: #ff8a1f;
+  --color-ember: #ff6a2b;
+  --color-vermilion: #c8342a;
+  --color-ivory: #fbf1dc;
+  --color-sand: #cbbd9f;
+
+  --font-display: "Cormorant Garamond", "Times New Roman", serif;
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-deva: "Tiro Devanagari Hindi", "Noto Serif Devanagari", serif;
+
+  --ease-silk: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-glide: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+@layer base {
+  html {
+    background: var(--color-night);
+    color: var(--color-ivory);
+    -webkit-tap-highlight-color: transparent;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: rgba(255, 196, 92, 0.32);
+    color: #fff8e6;
+  }
+
+  :focus-visible {
+    outline: 1px solid rgba(255, 215, 106, 0.8);
+    outline-offset: 4px;
+    border-radius: 999px;
+  }
+
+  html::-webkit-scrollbar {
+    width: 10px;
+  }
+  html::-webkit-scrollbar-track {
+    background: #05060d;
+  }
+  html::-webkit-scrollbar-thumb {
+    background: linear-gradient(#3a2a12, #6b4a1c);
+    border-radius: 10px;
+    border: 3px solid #05060d;
+  }
+}
+
+@layer components {
+  /* Warm metallic gold for display type, with a slow light sweep. */
+  .text-gilded {
+    background-image: linear-gradient(
+      100deg,
+      #a8681f 0%,
+      #e9b24f 18%,
+      #ffe7a6 34%,
+      #fff7dc 42%,
+      #ffd76a 52%,
+      #d79a3c 70%,
+      #f6cf78 86%,
+      #a8681f 100%
+    );
+    background-size: 220% 100%;
+    background-position: 0% 50%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: gild-sweep 11s var(--ease-glide) infinite alternate;
+  }
+
+  .text-glow {
+    text-shadow:
+      0 0 24px rgba(255, 180, 80, 0.28),
+      0 0 80px rgba(255, 140, 40, 0.18);
+  }
+
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-size: 0.68rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: rgba(251, 241, 220, 0.62);
+  }
+
+  /* Split-text masks */
+  .line-mask {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.08em;
+    margin-bottom: -0.08em;
+  }
+  .word {
+    display: inline-block;
+    will-change: transform;
+  }
+
+  .hairline {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 215, 106, 0.42), transparent);
+  }
+}
+
+@keyframes gild-sweep {
+  to {
+    background-position: 100% 50%;
+  }
+}
+
+/* Film grain: a single composited layer that jitters in steps. */
+.grain {
+  /* Only slightly larger than the viewport: a 300% x 300% blended layer
+     costs ~9x the GPU fill of the screen on every composited frame. */
+  position: fixed;
+  top: -48px;
+  left: -48px;
+  width: calc(100vw + 96px);
+  height: calc(100vh + 96px);
+  pointer-events: none;
+  z-index: 90;
+  opacity: 0.075;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.4 -0.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain 0.9s steps(6) infinite;
+  will-change: transform;
+}
+
+@keyframes grain {
+  0% { transform: translate3d(0, 0, 0); }
+  20% { transform: translate3d(-31px, 23px, 0); }
+  40% { transform: translate3d(19px, -41px, 0); }
+  60% { transform: translate3d(-43px, -11px, 0); }
+  80% { transform: translate3d(29px, 37px, 0); }
+  100% { transform: translate3d(-13px, 43px, 0); }
+}
+
+.vignette {
+  background: radial-gradient(120% 90% at 50% 45%, transparent 55%, rgba(2, 2, 8, 0.75) 100%);
+}
+
+/* Diya internals */
+.diya-flame {
+  transform-origin: 50% 96%;
+  will-change: transform;
+}
+.diya-glow {
+  mix-blend-mode: screen;
+  will-change: opacity, transform;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(255, 206, 120, 0.55) 0%,
+    rgba(255, 168, 72, 0.26) 14%,
+    rgba(255, 128, 40, 0.11) 32%,
+    rgba(255, 110, 30, 0.04) 50%,
+    transparent 68%
+  );
+}
+.diya-cast {
+  background: radial-gradient(
+    50% 50% at 50% 50%,
+    rgba(255, 170, 80, 0.38) 0%,
+    rgba(255, 130, 50, 0.12) 45%,
+    transparent 75%
+  );
+  mix-blend-mode: screen;
+  /* opacity is driven every frame by the flame engine; keep it on the compositor */
+  will-change: opacity;
+}
+.diya-lit {
+  will-change: opacity;
+}
+
+/* Generic ambient loops (paused by reduced motion below) */
+@keyframes sway {
+  from { transform: rotate(calc(var(--sway, 2deg) * -1)); }
+  to { transform: rotate(var(--sway, 2deg)); }
+}
+.sway {
+  transform-box: fill-box;
+  transform-origin: 50% 0%;
+  animation: sway var(--dur, 6s) var(--ease-glide) var(--delay, 0s) infinite alternate;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: var(--min, 0.35); }
+  50% { opacity: 1; }
+}
+.twinkle {
+  animation: twinkle var(--dur, 3s) ease-in-out var(--delay, 0s) infinite;
+}
+/*
+ * Animating opacity on elements *inside* an SVG repaints the whole SVG every
+ * frame. Twinkling items are instead grouped into a few whole-<svg> layers,
+ * whose opacity the compositor animates without any repaint.
+ */
+.twinkle-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  will-change: opacity;
+  animation: twinkle var(--dur, 3s) ease-in-out var(--delay, 0s) infinite;
+}
+.spin-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform-origin: 50% 50%;
+  will-change: transform;
+  animation: slow-spin var(--dur, 240s) linear infinite var(--dir, normal);
+}
+
+@keyframes slow-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes petal-fall {
+  0% { transform: translate3d(0, -10vh, 0) rotate(0deg); opacity: 0; }
+  8% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translate3d(var(--drift, 40px), 110vh, 0) rotate(var(--spin, 540deg)); opacity: 0; }
+}
+@keyframes petal-sway {
+  from { transform: translateX(-18px) rotateY(0deg); }
+  to { transform: translateX(18px) rotateY(180deg); }
+}
+
+@keyframes scroll-cue {
+  0% { transform: translateY(-100%); opacity: 0; }
+  30% { opacity: 1; }
+  100% { transform: translateY(260%); opacity: 0; }
+}
+
+.paused * {
+  animation-play-state: paused !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .grain {
+    animation: none;
+  }
+}
