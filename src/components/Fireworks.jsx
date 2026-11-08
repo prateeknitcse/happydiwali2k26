@@ -225,11 +225,16 @@ const Fireworks = forwardRef(function Fireworks({ auto = true, flashRef, classNa
 
       // fade the previous frame toward transparent -> motion trails.
       // Exponent keeps trail length identical at 60, 90, 120 or 144 Hz.
-      ctx.globalCompositeOperation = 'destination-out';
-      ctx.globalAlpha = 1 - Math.pow(0.78, dt);
-      ctx.fillStyle = '#000';
-      ctx.fillRect(0, 0, w, h);
-      ctx.globalAlpha = 1;
+      if (!sparks.length && !rockets.length) {
+        // 8-bit alpha never fades fully to 0 multiplicatively; wipe faint ghosts
+        ctx.clearRect(0, 0, w, h);
+      } else {
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.globalAlpha = 1 - Math.pow(0.78, dt);
+        ctx.fillStyle = '#000';
+        ctx.fillRect(0, 0, w, h);
+        ctx.globalAlpha = 1;
+      }
       ctx.globalCompositeOperation = 'lighter';
       ctx.lineCap = 'round';
 
