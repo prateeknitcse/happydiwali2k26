@@ -69,7 +69,7 @@ export default function Nav({ ready }) {
         >
           <FlameMark className="h-6 w-5 transition-transform duration-700 ease-[var(--ease-silk)] group-hover:-translate-y-0.5 group-hover:scale-110" />
           <span className="font-display text-lg tracking-wide text-ivory/90">
-            Deepavali <span className="italic text-gold/80">mmxxvi</span>
+            Deepavali <span className="italic text-gold/80"></span>
           </span>
         </a>
         <ul className="hidden items-center gap-9 md:flex">
